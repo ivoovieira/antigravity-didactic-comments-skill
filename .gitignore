@@ -1,0 +1,18 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Temporary directories
+.tmp/
+tmp/
+*.tmp
+*.log
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE & Editor folders
+.vscode/
+.idea/
