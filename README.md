@@ -1,57 +1,135 @@
-# Antigravity Skill: Explicador Didático (`explicador-didatico`)
+# Antigravity Didactic Comments Skill (`didactic-code-explainer`)
 
-Custom Skill para o **Antigravity** focada em engenharia reversa de código para fins pedagógicos, padronização visual por blocos lógicos e documentação contextual com foco no **"porquê"** (causa-raiz e mecânica da linguagem) em vez do óbvio.
+> 🌐 **Language / Idioma**: **🇺🇸 English** | [🇧🇷 Versão em Português (README.pt-BR.md)](README.pt-BR.md)
 
----
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Antigravity](https://img.shields.io/badge/Antigravity-Custom%20Skill-8A2BE2.svg)](#installation--setup)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](#installation--setup)
 
-## 🎯 Propósito da Skill
+A production-ready **Custom Skill for Google Antigravity** designed to standardize educational code formatting, initial contract declarations, visual phase boundaries, and conceptual **"why"** comments.
 
-Em ambientes educacionais, documentações técnicas, treinamentos corporativos e processos de onboarding, o código gerado ou mantido por desenvolvedores muitas vezes peca por dois extremos:
-1. **Ausência total de documentação**: Dificulta a compreensão do fluxo lógico por iniciantes ou novos membros do time.
-2. **Comentários redundantes e óbvios**: Comentários como `i++ // incrementa i`, que apenas poluem o código sem agregar valor conceitual.
-
-A skill **`explicador-didatico`** estabelece um padrão rigoroso e reproduzível baseado em três pilares:
-- **Contrato Inicial Estruturado**: Define no topo de cada rotina o objetivo pedagógico, tipos e contratos de parâmetros e de retornos.
-- **Divisórias Visuais por Fases Lógicas**: Demarcação clara de blocos lógicos (`Validação`, `Processamento`, `Fallback / Retorno`) com espaçamento padronizado.
-- **Comentários Conceituais**: Explicações focadas nas regras de negócio, idiomatismos de linguagem, complexidade, edge cases e notas didáticas.
+Ideal for technical educators, codebase onboarding, documentation authors, and engineering teams that value pristine readability and pedagogical depth over boilerplate noise.
 
 ---
 
-## 📂 Estrutura de Arquivos
+## 🎯 Purpose & Philosophy
+
+Code comments frequently suffer from two anti-patterns:
+1. **Total Absence of Documentation**: Complex business logic, subtle type constraints, and runtime edge cases remain tribal knowledge.
+2. **Tautological / Obvious Noise**: Pointless syntax restatements like `i++ // increment i` or `return true // returns true` that clutter the codebase without providing conceptual value.
+
+The **Didactic Comments Skill** enforces a disciplined, repeatable standard built upon **Three Core Pillars**:
+
+1. **Initial Structured Contract**: Every function, method, or key module starts with an explicit header defining the pedagogical objective, input parameter constraints, and return contract.
+2. **Visual Logical Block Boundaries**: Code execution is partitioned into clearly demarcated, numbered logical phases (e.g., `1. BUSINESS RULE VALIDATION`, `2. FALLBACK RETURN FLOW`) with standardized spacing.
+3. **Conceptual "Why" Comments & Didactic Notes**: Deep-dive explanations addressing language mechanics, boundary conditions, edge cases, and runtime behavior rather than merely narrating syntax.
+
+---
+
+## 🌐 Dynamic Language Resolution (Multilingual Support)
+
+This skill is designed for international use. It **does not force English comments on your code** if you or your team code in another language. The agent determines comment language via an automatic priority resolution chain:
+
+```mermaid
+flowchart TD
+    A["Agent Triggered"] --> B{"Explicit Language Request?<br><i>'comment in Portuguese' / 'in English'</i>"}
+    B -- Yes --> C["Generate in Requested Language"]
+    B -- No --> D{"Conversation Context Language?<br><i>User chatting in PT-BR, EN, ES, etc.</i>"}
+    D -- Detected --> E["Generate in User's Conversation Language"]
+    D -- Neutral / Unknown --> F{"Codebase Language?<br><i>Existing comments in the file</i>"}
+    F -- Detected --> G["Match Existing Codebase Language"]
+    F -- None --> H["Default to English"]
+```
+
+* **Portuguese prompt** (*"comente esta função..."*) ➔ Contracts and comments are generated in **Portuguese**.
+* **English prompt** (*"format this function..."*) ➔ Contracts and comments are generated in **English**.
+* **Explicit command** ➔ Always takes top precedence.
+
+---
+
+## 🔍 Before vs After Example
+
+### Input (Raw / Unstructured Code)
+```javascript
+function checkAge(user) {
+  if(user.age >= 18) {
+    return true;
+  }
+  return false;
+}
+```
+
+### Output (Formatted with Didactic Standards - English)
+```javascript
+// =================================================================
+// FUNCTION: Pedagogical Age Verification
+// Objective: Demonstrate conditional branch handling (if/else)
+// Input: 'user' object containing numeric 'age' property
+// Returns: Boolean (true for permitted, false for restricted)
+// =================================================================
+
+function checkAge(user) {
+  
+  // ---------------------------------------------------------------
+  // 1. BUSINESS RULE VALIDATION
+  // ---------------------------------------------------------------
+  // We evaluate age against the legal adulthood constant (18).
+  // Didactic note: The '>=' operator includes 18 in the boundary check.
+  if (user.age >= 18) {
+    return true; // Immediately returns and halts execution if condition is satisfied
+  }
+  
+  // ---------------------------------------------------------------
+  // 2. FALLBACK RETURN FLOW
+  // ---------------------------------------------------------------
+  // If execution reaches this point, the initial 'if' evaluated to false.
+  // Therefore, the user is underage.
+  return false;
+}
+```
+
+*(For the Portuguese output example, refer to [README.pt-BR.md](README.pt-BR.md))*
+
+---
+
+## 📂 File Structure
 
 ```
 .
 ├── .agents/
 │   └── skills/
 │       └── explicador-didatico/
-│           └── SKILL.md       # Definição formal e diretrizes da skill
-└── README.md                  # Documentação e guia de uso
+│           └── SKILL.md       # Core skill specifications & prompt rules
+├── README.md                  # Global English documentation
+├── README.pt-BR.md            # Brazilian Portuguese documentation
+├── LICENSE                    # MIT License
+└── .gitignore                 # Standard clean ignore rules
 ```
 
 ---
 
-## 🚀 Como Instalar e Utilizar no Antigravity
+## 🚀 Installation & Setup in Antigravity
 
-O sistema de extensão do Antigravity suporta dois níveis de escopo: **Workspace (Local)** e **Global (Máquina)**.
+Antigravity natively resolves customizations through **Workspace Discovery** and **Global Configuration**.
 
-### Opção 1: Escopo do Workspace (Recomendado para Projetos Específicos)
-Mantenha a pasta `.agents/` na raiz do seu repositório:
+### Option 1: Workspace Scope (Project-Specific)
+Place the `.agents/` directory directly at the root of your project:
 ```
-meu-projeto/
+your-project/
 └── .agents/
     └── skills/
         └── explicador-didatico/
             └── SKILL.md
 ```
-* **Comportamento**: O Antigravity carrega a skill automaticamente ao trabalhar no repositório. O time compartilha a configuração via controle de versão (Git).
+* **Advantage**: The skill is automatically loaded by Antigravity whenever that workspace is open. Team members automatically receive the skill through Git version control.
 
-### Opção 2: Escopo Global (Disponível em Qualquer Projeto na Máquina)
-Copie o diretório da skill para o diretório de configuração global do Antigravity:
+### Option 2: Global Scope (Available Across All Workspaces)
+Install the skill into your machine-wide Antigravity configuration directory:
 
 - **Linux / macOS**:
   ```bash
-  mkdir -p ~/.gemini/config/skills/
-  cp -r .agents/skills/explicador-didatico ~/.gemini/config/skills/
+  mkdir -p ~/.gemini/config/skills/explicador-didatico
+  cp -r .agents/skills/explicador-didatico/* ~/.gemini/config/skills/explicador-didatico/
   ```
 
 - **Windows (PowerShell)**:
@@ -63,97 +141,54 @@ Copie o diretório da skill para o diretório de configuração global do Antigr
 
 ---
 
-## 🤖 Quais Agentes Podem Ser Usados? (Explicação e Exemplos)
+## 🤖 Supported Agents & Subagent Workflows
 
-O ecossistema do Antigravity opera sob um modelo de orquestração multi-agente e disclosure progressivo. Veja como diferentes agentes tiram proveito desta skill:
+Antigravity leverages **Progressive Disclosure** (only the skill's name and description are injected into the context until activated). You can invoke this skill across various agent topologies:
 
-### 1. Agente Principal (Pair Programmer / Coding Assistant)
-* **Perfil**: O agente primário do chat com ferramentas completas de leitura, escrita e execução.
-* **Quando usar**: Durante sessões ativas de desenvolvimento, refatoração pontual de arquivos abertos ou ao pedir para o modelo explicar um trecho de código durante a programação em par.
-* **Exemplo de Prompt**:
-  > *"Ative a skill explicador-didatico e refatore a função `calculateTax` no arquivo `services/tax.ts` aplicando o contrato inicial e divisórias limpas."*
+### 1. Primary Chat Agent (Pair Programming)
+* **Role**: Real-time coding assistant with full read/write/run workspace capabilities.
+* **Usage**: On-demand refactoring during active development.
+* **Prompt Example**:
+  > *"Activate the didactic-code-explainer skill and refactor `authenticateUser()` in `auth.ts` with initial contracts and clear phase boundaries."*
 
-### 2. Subagente `self` (Trabalho Isolado e Refatorações em Lote)
-* **Perfil**: Um clone com o mesmo contexto de ferramentas do agente principal, porém executando em uma thread/sessão isolada.
-* **Quando usar**: Refatorar um módulo inteiro ou uma biblioteca inteira de utilitários para gerar material didático sem poluir o histórico ou estourar a janela de contexto da conversa principal.
-* **Exemplo de Invocação**:
+### 2. Subagent `self` (Isolated Batch Refactoring)
+* **Role**: A decoupled clone of the primary agent operating in its own background context thread.
+* **Usage**: Formatting entire directories or algorithmic suites without polluting the main conversation history or exhausting context window tokens.
+* **Orchestration**:
   ```python
   invoke_subagent(
       TypeName="self",
       Role="Pedagogical Refactorer",
-      Prompt="Percorra todos os arquivos em src/algorithms/ e aplique a skill explicador-didatico em cada função exportada."
+      Prompt="Walk through all files in 'src/algorithms/' and apply the didactic-code-explainer skill on all exported functions."
   )
   ```
 
-### 3. Subagente `research` (Mapeamento e Extração Conceitual)
-* **Perfil**: Subagente em sandbox somente leitura, projetado para analisar repositórios grandes e documentações sem modificar arquivos.
-* **Quando usar**: Analisar códigos legados complexos ou bibliotecas externas para descobrir quais regras implícitas e fluxos de borda precisam ser explicados pedagogicamente antes de iniciar a refatoração.
-* **Exemplo de Invocação**:
+### 3. Subagent `research` (Deep Logic & Edge Case Mapping)
+* **Role**: Read-only sandbox specialist tailored for broad codebase and documentation analysis.
+* **Usage**: Ingesting intricate legacy architectures and reverse-engineering the business rules and implicit edge cases *before* writing didactic commentary.
+* **Orchestration**:
   ```python
   invoke_subagent(
       TypeName="research",
       Role="Code Analyst",
-      Prompt="Analise a engine de autorização em src/auth/ e elabore um resumo conceitual das regras de validação para orientar a documentação didática."
+      Prompt="Analyze 'services/payment_engine.py' and compile a breakdown of hidden edge cases and state transitions to guide pedagogical commenting."
   )
   ```
 
-### 4. Subagente Customizado (`pedagogical-reviewer`)
-* **Perfil**: Agente especializado definido sob demanda via `define_subagent` ou via declaração em `.agents/rules/` ou plugins.
-* **Quando usar**: Integração em esteiras de code review ou auditorias de qualidade para garantir que novos commits atendam aos padrões pedagógicos.
-* **Exemplo de Definição**:
+### 4. Custom Subagent (`pedagogical-reviewer`)
+* **Role**: Dedicated review persona instantiated via `define_subagent` or plugin rules.
+* **Usage**: Automated pull-request gatekeeper or CI check for educational compliance.
+* **Definition**:
   ```python
   define_subagent(
       Name="pedagogical-reviewer",
-      Description="Audita funções em PRs garantindo contrato inicial e comentários de causa-raiz.",
-      SystemPrompt="Você é um auditor pedagógico de código. Verifique se o código possui contrato inicial, divisórias de seções e comentários explicativos conceituais de acordo com a skill explicador-didatico."
+      Description="Audits code against initial contract and didactic commenting standards.",
+      SystemPrompt="You are an educational code auditor. Verify that functions adhere to initial contracts, numbered phase boundaries, and why-focused explanatory comments according to the didactic skill."
   )
   ```
 
 ---
 
-## 🔍 Exemplo: Antes x Depois
+## 📄 License
 
-### Entrada Original (Código Bruto)
-```javascript
-function checkAge(user) {
-  if(user.age >= 18) {
-    return true;
-  }
-  return false;
-}
-```
-
-### Saída Formatada pela Skill
-```javascript
-// =================================================================
-// FUNÇÃO: Verificação de Maioridade Pedagógica
-// Objetivo: Demonstrar o uso de estruturas condicionais (if/else)
-// Entrada: Objeto 'user' contendo a propriedade numérica 'age'
-// Retorno: Booleano (true para liberado, false para bloqueado)
-// =================================================================
-
-function checkAge(user) {
-  
-  // ---------------------------------------------------------------
-  // 1. VALIDAÇÃO DA REGRA DE NEGÓCIO
-  // ---------------------------------------------------------------
-  // Verificamos a idade comparando com a constante de maioridade (18).
-  // Nota didática: O operador `>=` inclui o número 18 na validação.
-  if (user.age >= 18) {
-    return true; // Retorna imediatamente e interrompe a execução se for verdadeiro
-  }
-  
-  // ---------------------------------------------------------------
-  // 2. FLUXO DE RETORNO PADRÃO (FALLBACK)
-  // ---------------------------------------------------------------
-  // Se o programa chegou até aqui, significa que a condição do 'if' falhou.
-  // Portanto, o usuário é menor de idade.
-  return false;
-}
-```
-
----
-
-## 📄 Licença
-
-Distribuído sob a licença MIT. Consulte `LICENSE` para mais informações.
+This project is licensed under the [MIT License](LICENSE).

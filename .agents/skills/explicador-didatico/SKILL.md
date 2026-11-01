@@ -1,45 +1,58 @@
 ---
 name: explicador-didatico
 description: >-
-  Padroniza a formatação e a documentação didática de código-fonte.
-  Aplica contratos iniciais de função/módulo, divisão visual por blocos lógicos
-  e comentários conceituais focados no 'porquê' e em regras pedagógicas.
+  Standardizes didactic code formatting, structured initial contracts, visual logical
+  block boundaries, and conceptual 'why' comments. Supports multilingual codebases
+  (PT-BR, EN) and adapts dynamically to the user's conversational language.
 ---
 
-# Explicador Didático: Padrão Pedagógico de Código e Documentação
+# Didactic Code Explainer (`explicador-didatico`)
 
-Esta skill orienta o modelo a transformar código bruto ou monolítico em código altamente legível, estruturado e autoexplicativo, ideal para materiais didáticos, tutoriais técnicos, onboarding de desenvolvedores e code reviews conceituais.
-
----
-
-## 1. Diretrizes Fundamentais
-
-Ao formatar, comentar ou gerar código sob esta skill, siga rigorosamente os três pilares:
-
-### Pilar 1: Contrato Inicial Obrigatório
-Toda função, classe, método relevante ou módulo deve iniciar com um cabeçalho estruturado delimitado por barras duplas (`// =====` ou `# =====`), contendo:
-- **IDENTIFICADOR/TIPO**: Nome da entidade e seu propósito semântico didático.
-- **Objetivo**: O que a rotina resolve conceitualmente, evitando tautologias.
-- **Entrada / Parâmetros**: Tipos esperados, nomes e restrições de cada argumento.
-- **Retorno**: Tipo e significado do valor retornado em cada cenário.
-- **Complexidade / Pré-condições** (opcional, quando aplicável): Complexidade assintótica ou premissas exigidas.
-
-### Pilar 2: Divisão Visual por Blocos Lógicos
-- Divida o fluxo interno em seções numeradas e nomeadas logicamente.
-- Utilize linhas de separação limpas (ex: `// ---------------------------------------------------------------`).
-- Agrupe instruções que colaboram para o mesmo objetivo (validação, transformação, execução, fallback).
-- Mantenha espaçamento vertical uniforme (1 linha em branco antes e depois de cada divisória).
-
-### Pilar 3: Comentários Conceituais ("O Porquê", não "O Quê")
-- **Elimine o óbvio**: Não comente `i++ // incrementa i` ou `return true // retorna verdadeiro`.
-- **Foque no fundamento**: Explique por que aquela decisão foi tomada, particularidades de operadores (`>=`, `===`, coalescência nula), armadilhas comuns (edge cases, mutabilidade) e impacto arquitetural.
-- **Destaque Pedagógico**: Use marcações claras como `// Nota didática:` para explicitar sutilezas da linguagem ou comportamento de runtime.
+This skill guides the model to transform raw, monolithic, or opaque source code into structured, highly readable, and self-explanatory educational code. It is designed for tutorials, documentation, technical onboarding, and pedagogical code reviews.
 
 ---
 
-## 2. Exemplo Canônico de Referência
+## 1. Dynamic Language Resolution (Rule of Precedence)
 
-### Entrada (Código Bruto)
+The structural formatting of this skill is language-agnostic, but the **content of contracts and comments** must strictly match the correct spoken language using the following priority order:
+
+1. **Explicit Request**: If the user asks for a specific language (e.g., *"comment in Portuguese"* or *"write comments in English"*), adhere strictly to it.
+2. **Conversational Context (Default)**: Generate all contracts, section names, and didactic notes in the **language the user is conversing with you in**.
+   - If the user interacts in **Portuguese** ➔ Contracts and comments MUST be in **Portuguese** (e.g., `FUNÇÃO:`, `Nota didática:`).
+   - If the user interacts in **English** ➔ Contracts and comments MUST be in **English** (e.g., `FUNCTION:`, `Didactic note:`).
+3. **Existing Codebase Language**: In neutral or unstated contexts, analyze adjacent comments in the file and preserve the prevailing language of the repository.
+
+---
+
+## 2. Fundamental Architectural Pillars
+
+### Pillar 1: Initial Structured Contract
+Every non-trivial function, method, class, or module must begin with an explicit contract block delimited by double lines (`// =====` or `# =====`), detailing:
+- **IDENTIFIER / TYPE**: Entity name and pedagogical role.
+- **Objective**: The conceptual problem being solved (avoiding trivial syntax rewording).
+- **Inputs / Parameters**: Names, expected types, and constraints of each argument.
+- **Returns**: Types and semantic meaning of returned values across branches.
+- **Complexity / Preconditions** (optional): Asymptotic complexity ($O(n)$) or required invariants.
+
+### Pillar 2: Visual Logical Block Boundaries
+- Partition internal execution flow into numbered, clearly named phases (e.g., Validation, Transformation, Processing, Fallback).
+- Use clean, distinct separator lines (e.g., `// ---------------------------------------------------------------`).
+- Maintain consistent vertical whitespace (1 blank line before and after boundary blocks).
+
+### Pillar 3: Conceptual "Why" Comments & Didactic Notes
+- **Eliminate Tautologies**: Never restate the obvious (e.g., avoid `i++ // increments i` or `return true // returns true`).
+- **Explain the "Why"**: Detail business rationale, runtime behavior, operator idiosyncrasies (e.g., strict equality `===`, nullish coalescing `??`), edge cases, and algorithmic trade-offs.
+- **Didactic Callouts**: Use explicit pedagogical markers:
+  - English: `// Didactic note:`
+  - Portuguese: `// Nota didática:`
+
+---
+
+## 3. Reference Implementations (Few-Shot Examples)
+
+### Scenario A: English Context (Conversation or Request in English)
+
+#### Raw Input:
 ```javascript
 function checkAge(user) {
   if(user.age >= 18) {
@@ -49,7 +62,50 @@ function checkAge(user) {
 }
 ```
 
-### Saída Obrigatória (Formatado Didaticamente)
+#### Canonical Output (English):
+```javascript
+// =================================================================
+// FUNCTION: Pedagogical Age Verification
+// Objective: Demonstrate conditional branch handling (if/else)
+// Input: 'user' object containing numeric 'age' property
+// Returns: Boolean (true for permitted, false for restricted)
+// =================================================================
+
+function checkAge(user) {
+  
+  // ---------------------------------------------------------------
+  // 1. BUSINESS RULE VALIDATION
+  // ---------------------------------------------------------------
+  // We evaluate age against the legal adulthood constant (18).
+  // Didactic note: The '>=' operator includes 18 in the boundary check.
+  if (user.age >= 18) {
+    return true; // Immediately returns and halts execution if condition is satisfied
+  }
+  
+  // ---------------------------------------------------------------
+  // 2. FALLBACK RETURN FLOW
+  // ---------------------------------------------------------------
+  // If execution reaches this point, the initial 'if' evaluated to false.
+  // Therefore, the user is underage.
+  return false;
+}
+```
+
+---
+
+### Scenario B: Portuguese Context (Conversation or Request in Portuguese)
+
+#### Entrada Bruta:
+```javascript
+function checkAge(user) {
+  if(user.age >= 18) {
+    return true;
+  }
+  return false;
+}
+```
+
+#### Saída Canônica (Português):
 ```javascript
 // =================================================================
 // FUNÇÃO: Verificação de Maioridade Pedagógica
@@ -80,26 +136,30 @@ function checkAge(user) {
 
 ---
 
-## 3. Adaptação Multi-Linguagem
+## 4. Multi-Language Syntax Adaptations
 
-Mantenha a coerência de sintaxe da linguagem-alvo mantendo a mesma semântica visual:
+Maintain syntax consistency with the host programming language while keeping the visual semantics:
 
-- **JavaScript / TypeScript / C / C++ / C# / Java / PHP / Rust / Go / Kotlin**:
-  - Delimitador de Contrato: `// =================================================================`
-  - Delimitador de Bloco: `// ---------------------------------------------------------------`
+- **JavaScript / TypeScript / C / C++ / C# / Java / Go / Rust / PHP / Swift**:
+  - Contract Header: `// =================================================================`
+  - Section Boundary: `// ---------------------------------------------------------------`
 - **Python / Shell / Ruby**:
-  - Delimitador de Contrato: `# =================================================================`
-  - Delimitador de Bloco: `# ---------------------------------------------------------------`
+  - Contract Header: `# =================================================================`
+  - Section Boundary: `# ---------------------------------------------------------------`
 - **SQL**:
-  - Delimitador de Contrato: `-- =================================================================`
-  - Delimitador de Bloco: `-- ---------------------------------------------------------------`
+  - Contract Header: `-- =================================================================`
+  - Section Boundary: `-- ---------------------------------------------------------------`
+- **HTML / XML**:
+  - Contract Header: `<!-- ============================================================= -->`
+  - Section Boundary: `<!-- ----------------------------------------------------------- -->`
 
 ---
 
-## 4. Checklist de Aplicação
+## 5. Verification Checklist
 
-Antes de entregar a refatoração ou explicação ao usuário, valide:
-1. [ ] Há um cabeçalho de contrato no topo da rotina?
-2. [ ] Cada fase do algoritmo (validações, processamento, retorno) está visualmente separada por divisórias numeradas?
-3. [ ] Os comentários explicam a razão e a mecânica das decisões, sem parafrasear a sintaxe?
-4. [ ] Foram adicionadas notas didáticas em pontos de atenção técnica (ex: operadores de borda, tratamento de nulos)?
+Before outputting formatted code:
+1. [ ] Is the comment language matching the user's conversational language (or explicit override)?
+2. [ ] Does the routine begin with a complete, structured initial contract header?
+3. [ ] Are logical phases numbered and demarcated with clean separator lines?
+4. [ ] Are comments focused on "why" (business rules, language mechanics, edge cases) rather than syntax restatements?
+5. [ ] Is there at least one didactic callout highlighting key behavioral subtleties?
